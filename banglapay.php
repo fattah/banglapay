@@ -24,7 +24,7 @@ class banglapay extends PaymentModule
 
     public function install()
     {
-        if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn'))
+        if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('header'))
             return false;
         return true;
     }
@@ -51,6 +51,11 @@ class banglapay extends PaymentModule
             'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'
         ));
         return $this->display(__FILE__, 'hook/payment.tpl');
+    }
+
+    public function hookDisplayHeader()
+    {
+        $this->context->controller->addCSS($this->_path.'banglapay.css', 'all');
     }
 
     public function hookPaymentReturn($params)

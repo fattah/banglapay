@@ -27,7 +27,7 @@
 /**
  * @since 1.5.0
  */
-class BanglapayPaymentModuleFrontController extends ModuleFrontController
+class BanglapayDbblRedirectModuleFrontController extends ModuleFrontController
 {
 	public $ssl = true;
 	public $display_column_left = false;
@@ -38,7 +38,7 @@ class BanglapayPaymentModuleFrontController extends ModuleFrontController
 	public function initContent()
 	{
 		parent::initContent();
-        Logger::addLog("test payment", 1);
+        Logger::addLog("test dbbl payment", 1);
 
 		$cart = $this->context->cart;
 		if (!$this->module->checkCurrency($cart))
@@ -53,7 +53,8 @@ class BanglapayPaymentModuleFrontController extends ModuleFrontController
 			'this_path_bw' => $this->module->getPathUri(),
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
 		));
-        Logger::addLog("test payment2", 1);
-		$this->setTemplate('select_card_type.tpl');
+        Logger::addLog("test dbbl payment2", 1);
+		//$this->setTemplate('dbbl_redirect.tpl');
+        Tools::redirectLink('http://www.dutchbanglabank.com');
 	}
 }
