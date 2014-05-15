@@ -1,3 +1,5 @@
+You have selected card type: {$bangla_card_type}
+<br/><br/>
 This page will be redirected to dbbl.<br/><br/>
 
 Later Dbbl will the be redirected to

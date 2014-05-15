@@ -11,7 +11,7 @@ class banglapay extends PaymentModule
         $this->tab = 'payments_gateways';
         $this->author = 'Nascenia';
         $this->version = 1;
-        $this->controllers = array('payment', 'validation');
+        $this->controllers = array('payment', 'dbblredirect');
 
         $this->bootstrap = true;
         parent::__construct(); // The parent construct is required for translations
@@ -24,14 +24,14 @@ class banglapay extends PaymentModule
 
     public function install()
     {
-        if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('header'))
+        if (!parent::install() || !$this->createDbblPaymentTable() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('header'))
             return false;
         return true;
     }
 
     public function uninstall()
     {
-        if (!parent::uninstall())
+        if (!parent::uninstall() || !$this->dropDbblPaymentTable())
             return false;
         return true;
     }
@@ -80,4 +80,35 @@ class banglapay extends PaymentModule
         return false;
     }
 
+    function createDbblPaymentTable()
+    {
+        $db = Db::getInstance();
+        $query = "CREATE TABLE `"._DB_PREFIX_."dbbl_payments` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `order_id` int(11) DEFAULT NULL,
+          `status` varchar(255) DEFAULT NULL,
+          `status_code` varchar(255) DEFAULT NULL,
+          `card_number` varchar(255) DEFAULT NULL,
+          `dbbl_transaction_id` varchar(255) DEFAULT NULL,
+          `dbbl_request` varchar(255) DEFAULT NULL,
+          `dbbl_response` varchar(500) DEFAULT NULL,
+          `created_at` datetime DEFAULT NULL,
+          `updated_at` datetime DEFAULT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB";
+
+        $db->Execute($query);
+
+        return true;
+    }
+
+    function dropDbblPaymentTable()
+    {
+        $db = Db::getInstance();
+        $query = "DROP TABLE `"._DB_PREFIX_."dbbl_payments`";
+
+        $db->Execute($query);
+
+        return true;
+    }
 }

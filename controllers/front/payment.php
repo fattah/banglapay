@@ -54,6 +54,12 @@ class BanglapayPaymentModuleFrontController extends ModuleFrontController
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
 		));
         Logger::addLog("test payment2", 1);
-		$this->setTemplate('select_card_type.tpl');
+
+        //$this->displayInformation('You have now three default customer groups.');
+        //$this->displayWarning('When you delete a language, all related translations in the database will be deleted.');
+        $this->errors[] = Tools::displayError('Test error message');
+        $this->context->controller->errors[] = "test error";
+
+        $this->setTemplate('select_card_type.tpl');
 	}
 }
