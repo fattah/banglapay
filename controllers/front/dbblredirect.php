@@ -27,6 +27,9 @@
 /**
  * @since 1.5.0
  */
+
+include_once(_PS_MODULE_DIR_ . '/banglapay/api/dbbl_lib.php');
+
 class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
 {
     public $ssl = true;
@@ -47,6 +50,11 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
             $error_message = "Please select a card type";
         }
 
+        $dbbl_lib = new DbblLib();
+        $command_output = $dbbl_lib->system_call("ls -la");
+        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Test description", 'test-order-id', "1");
+        $redirect_url = $transaction_information["payment_url"];
+
         $this->context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
             'cust_currency' => $cart->id_currency,
@@ -56,15 +64,19 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
             'this_path_bw' => $this->module->getPathUri(),
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
             'bangla_card_type' => Tools::getValue('bangla_card_type'),
-            'error_message' => $error_message
+            'error_message' => $error_message,
+            'dbbl_lib' => $dbbl_lib,
+            'redirect_url' => $redirect_url
         ));
 
         if(Tools::getValue('bangla_card_type') == ""){
             $error_message = "Please select a card type";
             $this->setTemplate('select_card_type.tpl');
         }
-        else
+        else{
             $this->setTemplate('dbbl_redirect.tpl');
-        //Tools::redirectLink('http://www.dutchbanglabank.com');
+            //Tools::redirectLink('http://www.dutchbanglabank.com');
+            //Tools::redirectLink($redirect_url);
+        }
     }
 }
