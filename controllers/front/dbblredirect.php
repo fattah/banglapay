@@ -52,7 +52,7 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
 
         $dbbl_lib = new DbblLib();
         $command_output = $dbbl_lib->system_call("ls -la");
-        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Test description", 'test-order-id', "1");
+        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Goponjinish payment for cart id " . $cart->id_cart, $cart->id_cart, Tools::getValue('bangla_card_type'));
         $redirect_url = $transaction_information["payment_url"];
 
         $this->context->smarty->assign(array(

@@ -4,12 +4,12 @@
 <form action="{$link->getModuleLink('banglapay', 'dbblredirect', [], true)|escape:'html'}" method="post">
     Select your card type
     <br/><br/>
-    <div><input type="radio" name="bangla_card_type" value="dbbl-nexus"/>DBBL Nexus</div><br/>
-    <div><input type="radio" name="bangla_card_type" value="dbbl-visa">DBBL Visa</div><br/>
-    <div><input type="radio" name="bangla_card_type" value="dbbl-master">DBBL Master</div>
+    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_NEXUS}"/>DBBL Nexus</div><br/>
+    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_VISA_DEBIT}">DBBL Visa</div><br/>
+    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_DBBL_MASTER}">DBBL Master</div>
     <hr/>
-    <div><input type="radio" name="bangla_card_type" value="visa">Visa</div><br/>
-    <div><input type="radio" name="bangla_card_type" value="master">Master</div><br/>
+    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_VISA}">Visa</div><br/>
+    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_MASTER}">Master</div><br/>
     <br/>
 
     <a href="{$base_dir_ssl}order.php?step=3" class="button_large">{l s='Other payment methods' mod='banglapay'}</a>

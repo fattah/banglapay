@@ -27,6 +27,9 @@
 /**
  * @since 1.5.0
  */
+
+include_once(_PS_MODULE_DIR_ . '/banglapay/api/dbbl_lib.php');
+
 class BanglapayPaymentModuleFrontController extends ModuleFrontController
 {
 	public $ssl = true;
