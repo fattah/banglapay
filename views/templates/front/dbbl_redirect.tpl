@@ -14,3 +14,14 @@ Later Dbbl will the be redirected to
 <br>
 <b>dbbl transaction details command:</b> {$dbbl_lib->verify_transaction_command("dbbl-transaction-id")}
 <br>
+{var_dump($cart)}
+<br/><br/>
+Customer: {var_dump($customer)}
+<br/><br/>
+{*Config: {Configuration::updateValue('PS_OS_DBBL_PAYMENT_PENDING', constant('_PS_OS_DBBL_PAYMENT_PENDING_'))}*}
+<br/><br/>
+Config: {Configuration::get('_PS_OS_DBBL_PAYMENT_PENDING_')}
+<br/><br/>
+Config: {Configuration::get('PS_OS_DBBL_PAYMENT_PENDING')}
+<br/><br/>
+Configuration::get('PS_OS_PREPARATION'): {Configuration::get('PS_OS_PREPARATION')}

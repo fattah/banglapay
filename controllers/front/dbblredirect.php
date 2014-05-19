@@ -60,6 +60,8 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
         #TODO::4 Set order state to awaiting_dbbl_payment
 
         $redirect_url = $transaction_information["payment_url"];
+        $total = $this->context->cart->getOrderTotal(true, Cart::BOTH);
+        $customer = new Customer($this->context->cart->id_customer);
 
         $this->context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
@@ -72,7 +74,9 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
             'bangla_card_type' => Tools::getValue('bangla_card_type'),
             'error_message' => $error_message,
             'dbbl_lib' => $dbbl_lib,
-            'redirect_url' => $redirect_url
+            'redirect_url' => $redirect_url,
+            'cart' => $cart,
+            'customer' => $customer
         ));
 
         if(Tools::getValue('bangla_card_type') == ""){
@@ -80,6 +84,7 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
             $this->setTemplate('select_card_type.tpl');
         }
         else{
+            $this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_DBBL_PAYMENT_PENDING'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
             $this->setTemplate('dbbl_redirect.tpl');
             //Tools::redirectLink('http://www.dutchbanglabank.com');
             //Tools::redirectLink($redirect_url);
