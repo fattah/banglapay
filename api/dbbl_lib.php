@@ -19,6 +19,14 @@ class DbblLib
     const CARD_TYPE_VISA = 4;
     const CARD_TYPE_MASTER = 5;
 
+    const RESULT_CODE_SUCCESS = "000";
+    const RESULT_SUCCESS = "OK";
+
+    const STATE_NOT_PAID = 'not_paid';
+    const STATE_PAID = 'paid';
+    const STATE_FAILED = 'failed';
+    const STATE_IN_PROGRESS = 'in_progress';
+
     public $dbbl_lib_directory = "/home/deployer/dbbl/production";
     public $payment_url = "https://ecom1.dutchbanglabank.com/ecomm2/ClientHandler";
 
@@ -34,10 +42,16 @@ class DbblLib
         $transaction_response = null;
 
         try {
-            //$command_output = $this->system_call($transaction_command);
+            $sample_command_output1 = "TRANSACTION_ID: URkBZse8v3byMtYL6a15GtJAY9U=\nMRCH_TRANSACTION_ID: test-merchent-trans-1";#Successful transaction
+            $sample_command_output2 = "TRANSACTION_ID: gTNXnba/b9afxsnJpdoWXE5plds=\nMRCH_TRANSACTION_ID: test-merchent-trans-1";#Failed transaction
             //Sample output format: "TRANSACTION_ID: gTNXnba/b9afxsnJpdoWXE5plds=\nMRCH_TRANSACTION_ID: test-merchent-trans-1";
-            $command_output = "TRANSACTION_ID: gTNXnba/b9afxsnJpdoWXE5plds=\nMRCH_TRANSACTION_ID: test-merchent-trans-1";
+
+            //$command_output = $this->system_call($transaction_command);
+            $command_output = $sample_command_output2;
+            #TODO: Comment out above line and uncomment the system_call
+
             $transaction_response = $this->parse_transaction_id_response($command_output);
+            #TODO: write command and output to log file
         } catch (Exception $ex) {
             //logger . error ex . message
             //logger . error ex . backtrace . join("\n")
@@ -49,6 +63,27 @@ class DbblLib
         $transaction_response['payment_url'] = $this->payment_url . "?card_type=$provider&trans_id=" . $transaction_response["transaction_id"];
 
         return $transaction_response;
+    }
+
+    function verify_dbbl_transaction($transaction_id, $mrch_transaction_id = "")
+    {
+        if ($transaction_id == null)
+            $transaction_id = "";
+
+        $transaction_command = $this->verify_transaction_command($transaction_id);
+        $sample_command_output1 = "RESULT: OK\nRESULT_PS: FINISHED\nRESULT_CODE: 000\n3DSECURE: ATTEMPTED\nRRN: 413522233208\nAPPROVAL_CODE: 180180\nCARD_NUMBER: 1**************7701\nMRCH_TRANSACTION_ID: 17895";
+        $sample_command_output2 = "RESULT: TIMEOUT\nRESULT_PS: CANCELLED\nMRCH_TRANSACTION_ID: test-merchent-trans-1";
+        //$transaction_command = "curl --get --data command=#{CGI::escape(transaction_command)} #{DBBL_CONFIG["command_runner_url"]}";
+
+        //$command_response = system_call($transaction_command);
+        $command_response = $sample_command_output1;
+        #TODO: Comment out above line and uncomment the system_call
+
+        //logger.info "Transaction verification command output: #{output_lines.inspect}"
+        $response_hash = $this->parse_verification_response($command_response);
+        #TODO: write command and output to log
+
+        return array('code' => $response_hash['RESULT_CODE'], 'details' => $command_response, 'response_hash' => $response_hash);
     }
 
     function parse_transaction_id_response($command_response)
@@ -69,8 +104,30 @@ class DbblLib
         $ip_address = "106.186.115.31"; //DBBL_CONFIG["ip_address"], read from configuration
         $amount_in_paisa = $amount * 100;
         //return 'test1';
-        return "java -jar \"" . $this->dbbl_lib_directory . "/ecomm_merchant.jar\" " . $this->dbbl_lib_directory. "/merchant.properties\" -v " .
-            $amount_in_paisa . " 050 $ip_address $provider^\"$description\" --mrch_transaction_id='$mrch_transaction_id'" . " 2>&1";
+        return "java -jar \"" . $this->dbbl_lib_directory . "/ecomm_merchant.jar\" " . $this->dbbl_lib_directory . "/merchant.properties\" -v " .
+        $amount_in_paisa . " 050 $ip_address $provider^\"$description\" --mrch_transaction_id='$mrch_transaction_id'" . " 2>&1";
+    }
+
+    function is_payment_complete($transaction_details)
+    {
+        if ($transaction_details['code'] == '000')
+            return true;
+        return false;
+    }
+
+    function parse_verification_response($output_lines)
+    {
+        if (output_lines == null)
+            return array('result' => "FAILED", 'code' => null);
+
+        $output_lines = explode("\n", $output_lines);
+        $output = array();
+        foreach ($output_lines as $output_line) {
+            $key_value = explode(':', $output_line);
+            $output[$key_value[0]] = $key_value[1];
+        }
+
+        return $output;
     }
 
     function verify_transaction_command($transaction_id, $mrch_transaction_id = "")

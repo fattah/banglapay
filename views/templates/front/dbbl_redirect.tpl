@@ -5,23 +5,11 @@ This page will be redirected to dbbl. Click <a href="{$redirect_url}" style="col
 <br/><br/>
 
 Later Dbbl will the be redirected to
-<a href="{$link->getModuleLink('banglapay', 'success', [], true)|escape:'html'}">Success</a> or
-<a href="{$link->getModuleLink('banglapay', 'failure', [], true)|escape:'html'}">Failure</a> page
+<b><a href="{$link->getModuleLink('banglapay', 'dbblcallback', $callback_params, true)|escape:'html'}" style="color:green;">Success</a></b> or
+<b><a href="{$link->getModuleLink('banglapay', 'dbblcallback', $callback_params, true)|escape:'html'}" style="color:red;">Failure</a></b> page
 <br/><br/>
 <b>dbbl lib directory:</b> {$dbbl_lib->dbbl_lib_directory}
 <br>
 <b>dbbl transaction command:</b> {$dbbl_lib->transaction_command(10, "test", "test-merchant-id", '1')}
 <br>
 <b>dbbl transaction details command:</b> {$dbbl_lib->verify_transaction_command("dbbl-transaction-id")}
-<br>
-{var_dump($cart)}
-<br/><br/>
-Customer: {var_dump($customer)}
-<br/><br/>
-{*Config: {Configuration::updateValue('PS_OS_DBBL_PAYMENT_PENDING', constant('_PS_OS_DBBL_PAYMENT_PENDING_'))}*}
-<br/><br/>
-Config: {Configuration::get('_PS_OS_DBBL_PAYMENT_PENDING_')}
-<br/><br/>
-Config: {Configuration::get('PS_OS_DBBL_PAYMENT_PENDING')}
-<br/><br/>
-Configuration::get('PS_OS_PREPARATION'): {Configuration::get('PS_OS_PREPARATION')}

@@ -46,7 +46,7 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
         if (!$this->module->checkCurrency($cart))
             Tools::redirect('index.php?controller=order');
 
-        if(Tools::getValue('bangla_card_type') == ""){
+        if (Tools::getValue('bangla_card_type') == "") {
             $error_message = "Please select a card type";
         }
 
@@ -76,15 +76,21 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
             'dbbl_lib' => $dbbl_lib,
             'redirect_url' => $redirect_url,
             'cart' => $cart,
-            'customer' => $customer
+            'customer' => $customer,
+            'time' => 'test',
+            'callback_params' => array('trans_id' => $transaction_information['transaction_id'])
         ));
 
-        if(Tools::getValue('bangla_card_type') == ""){
+        if (Tools::getValue('bangla_card_type') == "") {
             $error_message = "Please select a card type";
             $this->setTemplate('select_card_type.tpl');
-        }
-        else{
-            $this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_DBBL_PAYMENT_PENDING'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
+        } else {
+            Db::getInstance()->Execute('
+	        INSERT INTO `' . _DB_PREFIX_ . 'dbbl_payments` (`cart_id`, `status`, `dbbl_transaction_id`, `created_at`, `updated_at`)
+	        VALUES(' . (int)$this->context->cart->id . ', \'' . DbblLib::STATE_IN_PROGRESS . '\', \'' .
+                $transaction_information['transaction_id'] . '\', \' ' . date("Y-m-d H:i:s") . '\', \' ' . date("Y-m-d H:i:s") . '\')');
+
+            $this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_AWAITING_DBBL_PAYMENT'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
             $this->setTemplate('dbbl_redirect.tpl');
             //Tools::redirectLink('http://www.dutchbanglabank.com');
             //Tools::redirectLink($redirect_url);

@@ -6,6 +6,8 @@
  * Time: 12:55 PM
  */
 
+include_once(_PS_MODULE_DIR_ . '/banglapay/api/dbbl_lib.php');
+
 class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
 {
     public $ssl = true;
@@ -22,10 +24,58 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
         if (!$this->module->checkCurrency($cart))
             Tools::redirect('index.php?controller=order');
 
-        if(Tools::getValue('bangla_card_type') == ""){
+        if (Tools::getValue('bangla_card_type') == "") {
             $error_message = "Please select a card type";
         }
 
+        $dbbl_transaction_id = Tools::getValue('trans_id');
+        $dbbl_lib = new DbblLib();
+        $transaction_details = $dbbl_lib->verify_dbbl_transaction($dbbl_transaction_id);
+        #Todo: Retrieve dbbl_payment fro db.
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where dbbl_transaction_id = \'' . $dbbl_transaction_id . '\'';
+        $dbbl_transaction = Db::getInstance()->getRow($sql);
+
+        if ($dbbl_lib->is_payment_complete($transaction_details)) {
+            #TODO: check status was not successful before
+            if (true) {
+                #TODO::  update transaction status,
+                Db::getInstance()->Execute('
+	        UPDATE `' . _DB_PREFIX_ . 'dbbl_payments` set `status` = \'' . DbblLib::STATE_PAID . '\',
+	        `result_code` = \'' . $transaction_details['response_hash']['RESULT_CODE'] . '\' ,
+	        `result` = \'' . $transaction_details['response_hash']['RESULT'] . '\',
+	        `updated_at` = \'' . date("Y-m-d H:i:s") . '\'
+	        where `dbbl_transaction_id` = \'' . $dbbl_transaction_id . '\'');
+                #TODO: update order status.
+                $order_attributes = Db::getInstance()->getRow('SELECT * FROM ' . _DB_PREFIX_ . 'orders where id_cart = \'' .
+                    $dbbl_transaction['cart_id'] . '\'');
+                $objOrder = new Order($order_attributes['id_order']);
+                $history = new OrderHistory();
+                $history->id_order = (int)$objOrder->id;
+                $history->changeIdOrderState((int)Configuration::get('PS_OS_PAYMENT'), (int)($objOrder->id));
+                $error_message = "Payment successful";
+            }
+        } else {
+            #TODO::  update transaction status,
+            Db::getInstance()->Execute('
+	        UPDATE `' . _DB_PREFIX_ . 'dbbl_payments` set `status` = \'' . DbblLib::STATE_PAID . '\',
+	        `result_code` = \'' . $transaction_details['response_hash']['RESULT_CODE'] . '\' ,
+	        `result` = \'' . $transaction_details['response_hash']['RESULT'] . '\',
+	        `updated_at` = \'' . date("Y-m-d H:i:s") . '\'
+	        where `dbbl_transaction_id` = \'' . $dbbl_transaction_id . '\'');
+
+            #TODO: update order status.
+            $order_attributes = Db::getInstance()->getRow('SELECT * FROM ' . _DB_PREFIX_ . 'orders where id_cart = \'' .
+                $dbbl_transaction['cart_id'] . '\'');
+            $objOrder = new Order($order_attributes['id_order']);
+            $history = new OrderHistory();
+            $history->id_order = (int)$objOrder->id;
+            $history->changeIdOrderState((int)Configuration::get('PS_OS_ERROR'), (int)($objOrder->id));
+            $error_message = "Payment error";
+        }
+
+        $redirect_url = "";
+        $total = $this->context->cart->getOrderTotal(true, Cart::BOTH);
+        $customer = new Customer($this->context->cart->id_customer);
         $this->context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
             'cust_currency' => $cart->id_currency,
@@ -35,15 +85,14 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
             'this_path_bw' => $this->module->getPathUri(),
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
             'bangla_card_type' => Tools::getValue('bangla_card_type'),
-            'error_message' => $error_message
+            'error_message' => $error_message,
+            'dbbl_lib' => $dbbl_lib,
+            'redirect_url' => $redirect_url,
+            'cart' => $cart,
+            'customer' => $customer,
+            'time' => 'test',
+            'callback_params' => array('trans_id' => $dbbl_transaction_id)
         ));
-
-        if(Tools::getValue('bangla_card_type') == ""){
-            $error_message = "Please select a card type";
-            $this->setTemplate('select_card_type.tpl');
-        }
-        else
-            $this->setTemplate('dbbl_redirect.tpl');
-        //Tools::redirectLink('http://www.dutchbanglabank.com');
+        $this->setTemplate('dbbl_redirect.tpl');
     }
 }

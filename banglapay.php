@@ -39,14 +39,14 @@ class banglapay extends PaymentModule
     public function setupStatus()
     {
         // check if the order status is defined
-        if (!defined('_PS_OS_DBBL_PAYMENT_PENDING_')) {
+        if (!defined('_PS_OS_AWAITING_DBBL_PAYMENT_')) {
             // order status is not defined - check if, it exists in the table
             $rq = Db::getInstance()->getRow('
 	    SELECT `id_order_state` FROM `' . _DB_PREFIX_ . 'order_state_lang`
-	    WHERE id_lang = \'' . pSQL('1') . '\' AND  name = \'' . pSQL('DBBL payment pending') . '\'');
+	    WHERE id_lang = \'' . pSQL('1') . '\' AND  name = \'' . pSQL('Awaiting DBBL payment') . '\'');
             if ($rq && isset($rq['id_order_state']) && intval($rq['id_order_state']) > 0) {
                 // order status exists in the table - define it.
-                define('_PS_OS_DBBL_PAYMENT_PENDING_', $rq['id_order_state']);
+                define('_PS_OS_AWAITING_DBBL_PAYMENT_', $rq['id_order_state']);
             } else {
                 // order status doesn't exist in the table
                 // insert it into the table and then define it.
@@ -54,9 +54,9 @@ class banglapay extends PaymentModule
 	        INSERT INTO `' . _DB_PREFIX_ . 'order_state` (`unremovable`, `color`, `module_name`) VALUES(1, \'lightblue\', \'' . $this->name . '\')');
                 $stateid = Db::getInstance()->Insert_ID();
                 Db::getInstance()->Execute('INSERT INTO `' . _DB_PREFIX_ . 'order_state_lang` (`id_order_state`, `id_lang`, `name`)
-	        VALUES(' . intval($stateid) . ', 1, \'DBBL payment pending\')');
-                define('_PS_OS_DBBL_PAYMENT_PENDING_', $stateid);
-                Configuration::updateValue('PS_OS_DBBL_PAYMENT_PENDING', $stateid);
+	        VALUES(' . intval($stateid) . ', 1, \'Awaiting DBBL payment\')');
+                define('_PS_OS_AWAITING_DBBL_PAYMENT_', $stateid);
+                Configuration::updateValue('PS_OS_AWAITING_DBBL_PAYMENT', $stateid);
             }
         }
     }
@@ -110,9 +110,11 @@ class banglapay extends PaymentModule
         $db = Db::getInstance();
         $query = "CREATE TABLE `" . _DB_PREFIX_ . "dbbl_payments` (
           `id` int(11) NOT NULL AUTO_INCREMENT,
+          `cart_id` int(11) DEFAULT NULL,
           `order_id` int(11) DEFAULT NULL,
           `status` varchar(255) DEFAULT NULL,
-          `status_code` varchar(255) DEFAULT NULL,
+          `result` varchar(255) DEFAULT NULL,
+          `result_code` varchar(255) DEFAULT NULL,
           `card_number` varchar(255) DEFAULT NULL,
           `dbbl_transaction_id` varchar(255) DEFAULT NULL,
           `dbbl_request` varchar(255) DEFAULT NULL,
