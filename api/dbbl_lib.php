@@ -30,6 +30,7 @@ class DbblLib
     public $dbbl_lib_directory = "/home/deployer/dbbl/production";
     public $payment_url = "https://ecom1.dutchbanglabank.com/ecomm2/ClientHandler";
     public $merchant_transaction_id_prefix = "gj-";
+    public $environment = "test"; # "test"/"production"
 
     function create_transaction($amount, $description, $mrch_transaction_id, $provider, $retry_count = 5)
     {
@@ -43,12 +44,15 @@ class DbblLib
         $transaction_response = null;
 
         try {
-            $sample_command_output1 = "TRANSACTION_ID: URkBZse8v3byMtYL6a15GtJAY9U=\nMRCH_TRANSACTION_ID: test-merchent-trans-1";#Successful transaction
-            $sample_command_output2 = "TRANSACTION_ID: gTNXnba/b9afxsnJpdoWXE5plds=\nMRCH_TRANSACTION_ID: test-merchent-trans-1";#Failed transaction
             //Sample output format: "TRANSACTION_ID: gTNXnba/b9afxsnJpdoWXE5plds=\nMRCH_TRANSACTION_ID: test-merchent-trans-1";
 
-            //$command_output = $this->system_call($transaction_command);
-            $command_output = $sample_command_output2;
+            if ($this->environment == "production") {
+                $command_output = $this->system_call($transaction_command);
+            } else {
+                $sample_command_output1 = "TRANSACTION_ID: URkBZse8v3byMtYL6a15GtJAY9U=\nMRCH_TRANSACTION_ID: test-merchent-trans-1"; #Successful transaction
+                $sample_command_output2 = "TRANSACTION_ID: gTNXnba/b9afxsnJpdoWXE5plds=\nMRCH_TRANSACTION_ID: test-merchent-trans-1"; #Failed transaction
+                $command_output = $sample_command_output2;
+            }
             #TODO: Comment out above line and uncomment the system_call
 
             $transaction_response = $this->parse_transaction_id_response($command_output);
@@ -72,13 +76,15 @@ class DbblLib
             $transaction_id = "";
 
         $transaction_command = $this->verify_transaction_command($transaction_id);
-        $sample_command_output1 = "RESULT: OK\nRESULT_PS: FINISHED\nRESULT_CODE: 000\n3DSECURE: ATTEMPTED\nRRN: 413522233208\nAPPROVAL_CODE: 180180\nCARD_NUMBER: 1**************7701\nMRCH_TRANSACTION_ID: 17895";
-        $sample_command_output2 = "RESULT: TIMEOUT\nRESULT_PS: CANCELLED\nMRCH_TRANSACTION_ID: test-merchent-trans-1";
         //$transaction_command = "curl --get --data command=#{CGI::escape(transaction_command)} #{DBBL_CONFIG["command_runner_url"]}";
 
-        //$command_response = system_call($transaction_command);
-        $command_response = $sample_command_output1;
-        #TODO: Comment out above line and uncomment the system_call
+        if ($this->environment == "production") {
+            $command_response = system_call($transaction_command);
+        } else {
+            $sample_command_output1 = "RESULT: OK\nRESULT_PS: FINISHED\nRESULT_CODE: 000\n3DSECURE: ATTEMPTED\nRRN: 413522233208\nAPPROVAL_CODE: 180180\nCARD_NUMBER: 1**************7701\nMRCH_TRANSACTION_ID: 17895";
+            $sample_command_output2 = "RESULT: TIMEOUT\nRESULT_PS: CANCELLED\nMRCH_TRANSACTION_ID: test-merchent-trans-1";
+            $command_response = $sample_command_output1;
+        }
 
         //logger.info "Transaction verification command output: #{output_lines.inspect}"
         $response_hash = $this->parse_verification_response($command_response);
