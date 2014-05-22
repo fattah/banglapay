@@ -29,10 +29,11 @@ class DbblLib
 
     public $dbbl_lib_directory = "/home/deployer/dbbl/production";
     public $payment_url = "https://ecom1.dutchbanglabank.com/ecomm2/ClientHandler";
+    public $merchant_transaction_id_prefix = "gj-";
 
     function create_transaction($amount, $description, $mrch_transaction_id, $provider, $retry_count = 5)
     {
-        $transaction_command = $this->transaction_command($amount, $description, $mrch_transaction_id, $provider);
+        $transaction_command = $this->transaction_command($amount, $description, $this->merchant_transaction_id_prefix . $mrch_transaction_id, $provider);
 //logger . info "Transaction command: #{transaction_command}"
 //$transaction_command = "curl --get --data command=#{CGI::escape(transaction_command)} #{DBBL_CONFIG["command_runner_url"]}";
 //logger . info "Transaction command: #{transaction_command}"
