@@ -27,14 +27,13 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
         if (Tools::getValue('bangla_card_type') == "") {
             $error_message = "Please select a card type";
         }
-
         $dbbl_transaction_id = Tools::getValue('trans_id');
         $dbbl_lib = new DbblLib();
         $transaction_details = $dbbl_lib->verify_dbbl_transaction($dbbl_transaction_id);
         #Todo: Retrieve dbbl_payment fro db.
-        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where dbbl_transaction_id = \'' . $dbbl_transaction_id . '\'';
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where dbbl_transaction_id = \'' . $dbbl_transaction_id . '\' order by created_at desc';
         $dbbl_transaction = Db::getInstance()->getRow($sql);
-
+        $success = false;
         if ($dbbl_lib->is_payment_complete($transaction_details)) {
             #TODO: check status was not successful before
             if (true) {
@@ -52,7 +51,8 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
                 $history = new OrderHistory();
                 $history->id_order = (int)$objOrder->id;
                 $history->changeIdOrderState((int)Configuration::get('PS_OS_PAYMENT'), (int)($objOrder->id));
-                $error_message = "Payment successful";
+                $error_message = "Payment completed";
+                $success = true;
             }
         } else {
             #TODO::  update transaction status,
@@ -70,7 +70,8 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
             $history = new OrderHistory();
             $history->id_order = (int)$objOrder->id;
             $history->changeIdOrderState((int)Configuration::get('PS_OS_ERROR'), (int)($objOrder->id));
-            $error_message = "Payment error";
+            $error_message = "Payment failed";
+            $success = false;
         }
 
         $redirect_url = "";
@@ -93,6 +94,11 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
             'time' => 'test',
             'callback_params' => array('trans_id' => $dbbl_transaction_id)
         ));
-        $this->setTemplate('dbbl_redirect.tpl');
+        //$this->setTemplate('dbbl_redirect.tpl');
+        #TODO: show successful/failure message
+        if($success == true)
+            $this->setTemplate('dbbl_success.tpl');
+        else
+            $this->setTemplate('dbbl_failure.tpl');
     }
 }

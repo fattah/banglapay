@@ -30,7 +30,7 @@ class DbblLib
     public $dbbl_lib_directory = "/home/deployer/dbbl/production";
     public $payment_url = "https://ecom1.dutchbanglabank.com/ecomm2/ClientHandler";
     public $merchant_transaction_id_prefix = "gj-";
-    public $environment = "test"; # "test"/"production"
+    public $environment = "production"; # "test"/"production"
 
     function create_transaction($amount, $description, $mrch_transaction_id, $provider, $retry_count = 5)
     {
@@ -65,7 +65,7 @@ class DbblLib
         if ($transaction_response == null || $transaction_response == "")
             $transaction_response = array('transaction_id' => "invalid", 'details' => "Failed to get transaction id according to dbbl spec");
 
-        $transaction_response['payment_url'] = $this->payment_url . "?card_type=$provider&trans_id=" . $transaction_response["transaction_id"];
+        $transaction_response['payment_url'] = $this->payment_url . "?card_type=$provider&trans_id=" . urlencode($transaction_response["transaction_id"]);
 
         return $transaction_response;
     }
@@ -79,7 +79,7 @@ class DbblLib
         //$transaction_command = "curl --get --data command=#{CGI::escape(transaction_command)} #{DBBL_CONFIG["command_runner_url"]}";
 
         if ($this->environment == "production") {
-            $command_response = system_call($transaction_command);
+            $command_response = $this->system_call($transaction_command);
         } else {
             $sample_command_output1 = "RESULT: OK\nRESULT_PS: FINISHED\nRESULT_CODE: 000\n3DSECURE: ATTEMPTED\nRRN: 413522233208\nAPPROVAL_CODE: 180180\nCARD_NUMBER: 1**************7701\nMRCH_TRANSACTION_ID: 17895";
             $sample_command_output2 = "RESULT: TIMEOUT\nRESULT_PS: CANCELLED\nMRCH_TRANSACTION_ID: test-merchent-trans-1";
@@ -111,7 +111,7 @@ class DbblLib
         $ip_address = "106.186.115.31"; //DBBL_CONFIG["ip_address"], read from configuration
         $amount_in_paisa = $amount * 100;
         //return 'test1';
-        return "java -jar \"" . $this->dbbl_lib_directory . "/ecomm_merchant.jar\" " . $this->dbbl_lib_directory . "/merchant.properties\" -v " .
+        return "java -jar \"" . $this->dbbl_lib_directory . "/ecomm_merchant.jar\" \"" . $this->dbbl_lib_directory . "/merchant.properties\" -v " .
         $amount_in_paisa . " 050 $ip_address $provider^\"$description\" --mrch_transaction_id='$mrch_transaction_id'" . " 2>&1";
     }
 
@@ -154,8 +154,13 @@ class DbblLib
         $log_message = "\n" . strftime($time_format, time()) . ": " . $command;
         $log_message .= "\nOutput: \n" . "$output";
 
-        file_put_contents(_PS_ROOT_DIR_ . "/log/dbbl-commands.log", $log_message, FILE_APPEND);
+        $this->log_message($log_message);
 
         return $output;
+    }
+
+    function log_message($log_message)
+    {
+        file_put_contents(_PS_ROOT_DIR_ . "/log/dbbl-commands.log", $log_message, FILE_APPEND);
     }
 }

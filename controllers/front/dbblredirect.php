@@ -51,9 +51,8 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
         }
 
         $dbbl_lib = new DbblLib();
-        $command_output = $dbbl_lib->system_call("ls -la");
         #1 Consume dbbl api and get transaction information
-        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Goponjinish payment for cart id " . $cart->id_cart, $cart->id_cart, Tools::getValue('bangla_card_type'));
+        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Goponjinish payment for cart id " . $cart->id_cart, "test-" . $cart->id_cart, Tools::getValue('bangla_card_type'));
 
         #TODO::2 Create an entry in dbbl_payments table
         #3 Redirect to dbbl payment url
@@ -91,9 +90,10 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
                 $transaction_information['transaction_id'] . '\', \' ' . date("Y-m-d H:i:s") . '\', \' ' . date("Y-m-d H:i:s") . '\')');
 
             $this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_AWAITING_DBBL_PAYMENT'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
-            $this->setTemplate('dbbl_redirect.tpl');
-            //Tools::redirectLink('http://www.dutchbanglabank.com');
-            //Tools::redirectLink($redirect_url);
+            if($dbbl_lib->environment == 'test')
+                $this->setTemplate('dbbl_redirect.tpl');
+            else
+                Tools::redirectLink($redirect_url);
         }
     }
 }
