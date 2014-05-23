@@ -52,9 +52,11 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
                 $history->id_order = (int)$objOrder->id;
                 $state = (int)Configuration::get('PS_OS_PAYMENT');
                 $history->changeIdOrderState($state, (int)($objOrder->id));
-                $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'order_history` (`id_order`, `id_order_state`, `date_add`)
-	        VALUES(' . (int)$order_attributes['id_order'] . ', ' . $state . ', \'' . date("Y-m-d H:i:s") . '\')';
+                $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'order_history` (`id_order`, `id_order_state`, `date_add`, `id_employee`)
+	            VALUES(' . (int)$order_attributes['id_order'] . ', ' . $state . ', \'' . date("Y-m-d H:i:s") . '\', 0)';
                 Db::getInstance()->Execute($sql);
+                echo $sql;
+                echo "history id: " . Db::getInstance()->Insert_ID();
 
                 $error_message = "Payment completed";
                 $success = true;
@@ -76,9 +78,11 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
             $history->id_order = (int)$objOrder->id;
             $state = (int)Configuration::get('PS_OS_ERROR');
             $history->changeIdOrderState($state, (int)($objOrder->id));
-            $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'order_history` (`id_order`, `id_order_state`, `date_add`)
-	        VALUES(' . (int)$order_attributes['id_order'] . ', ' . $state . ', \'' . date("Y-m-d H:i:s") . '\')';
+            $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'order_history` (`id_order`, `id_order_state`, `date_add`, `id_employee`)
+	        VALUES(' . (int)$order_attributes['id_order'] . ', ' . $state . ', \'' . date("Y-m-d H:i:s") . '\', 0)';
             Db::getInstance()->Execute($sql);
+            echo $sql;
+            echo "history id: " . Db::getInstance()->Insert_ID();
 
             $error_message = "Payment failed";
             $success = false;

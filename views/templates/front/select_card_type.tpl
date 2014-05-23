@@ -4,10 +4,14 @@
 <form action="{$link->getModuleLink('banglapay', 'dbblredirect', [], true)|escape:'html'}" method="post">
     Select your card type
     <br/><br/>
+    <b>Dutch Bangla bank cards</b>
+    <br/><br/>
     <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_NEXUS}"/>DBBL Nexus</div><br/>
     <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_VISA_DEBIT}">DBBL Visa</div><br/>
     <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_DBBL_MASTER}">DBBL Master</div>
     <hr/>
+    <b>Other bank cards</b>
+    <br/><br/>
     <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_VISA}">Visa</div><br/>
     <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_MASTER}">Master</div><br/>
     <br/>
