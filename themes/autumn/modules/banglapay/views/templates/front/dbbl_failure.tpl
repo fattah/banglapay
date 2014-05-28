@@ -6,8 +6,9 @@
         <br/><br/>
         {l s='You have chosen the DBBL payment method and the payment failed.' mod='banglapay'}
         <br/><br/><span class="bold">{l s='We cannot process your order' mod='banglapay'}</span>
-        <br/><br/>{l s='For any questions or for further information, please contact our' mod='banglapay'} <a
-                href="{$link->getPageLink('contact-form', true)|escape:'html'}">{l s='customer support' mod='banglapay'}</a>.
+        <br/><br/>    {l s='For any questions or for further information, please email us at ' mod='banglapay'} <a
+                href="mailto: support@goponjinish.com">support@goponjinish.com</a> or
+        {l s='call us at ' mod='banglapay'} {"01730 332502"}.
     </p>
 </div>
 <br/>

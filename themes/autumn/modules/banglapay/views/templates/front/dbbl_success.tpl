@@ -9,7 +9,7 @@
             {*href="{$link->getPageLink('contact-form', true)|escape:'html'}">{l s='customer support' mod='banglapay'}</a>.*}
     {l s='For any questions or for further information, please email us at ' mod='banglapay'} <a
             href="mailto: support@goponjinish.com">support@goponjinish.com</a> or
-    {l s='call us at ' mod='banglapay'} {"01730 332502"}
+    {l s='call us at ' mod='banglapay'} {"01730 332502"}.
 </div>
 <br/>
 <div>
