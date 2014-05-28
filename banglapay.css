@@ -17,4 +17,39 @@ p.payment_module a.banglapay:after {
 }
 
 p.payment_module a:hover {
-    background-color: #f6f6f6; }
+    background-color: #f6f6f6;
+}
+
+.banglapay .card-type{
+    padding: 5px;
+    margin: 5px;
+    display: inline-block;
+    width: 200px;
+    cursor: pointer;
+    border: 1px solid #C0C0C0 !important;
+    -webkit-border-radius: 2px!important;
+    -moz-border-radius: 2px!important;
+    border-radius: 2px!important;
+}
+
+.banglapay .card-type:hover{
+    background-color: #F7F7F7;
+}
+
+.banglapay .card-type label{
+    display: inline;
+    margin-left: 2px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.banglapay .card-type input[type=radio]{
+    vertical-align: sub;
+}
+
+.banglapay hr {
+    background-color: #C0C0C0;
+    border: none;
+    color: #FF0000;
+    height: 1px;
+}

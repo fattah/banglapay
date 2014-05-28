@@ -6,9 +6,9 @@
     <br/><br/>
     <b>Dutch Bangla bank cards</b>
     <br/><br/>
-    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_NEXUS}"/>DBBL Nexus</div><br/>
-    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_VISA_DEBIT}">DBBL Visa</div><br/>
-    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_DBBL_MASTER}">DBBL Master</div>
+    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_NEXUS}" id="card_type_1"/><label for="card_type_1">DBBL Nexus</label></div><br/>
+    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_VISA_DEBIT}" id="card_type_2"/><label for="card_type_1">DBBL Visa</label></div><br/>
+    <div><input type="radio" name="bangla_card_type" value="{DbblLib::CARD_TYPE_DBBL_MASTER}" id="card_type_3"/><label for="card_type_1">DBBL Master</label></div>
     <hr/>
     <b>Other bank cards</b>
     <br/><br/>

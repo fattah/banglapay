@@ -26,6 +26,11 @@ class banglapay extends PaymentModule
         if (!parent::install() || !$this->createDbblPaymentTable() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('header'))
             return false;
         $this->setupStatus();
+        $command = "ln -s " . _PS_MODULE_DIR_ . $this->name . "/themes/autumn/modules/" . $this->name . " " . _PS_THEME_DIR_ . "modules/" . $this->name;
+        echo "Command: " . $command;
+        file_put_contents(_PS_ROOT_DIR_ . "/log/dbbl-commands.log", $command . "\n", FILE_APPEND);
+        $output = shell_exec($command);
+        file_put_contents(_PS_ROOT_DIR_ . "/log/dbbl-commands.log", $output . "\n", FILE_APPEND);
         return true;
     }
 
