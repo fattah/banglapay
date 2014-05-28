@@ -2,12 +2,14 @@
 
 <br/>
 <div class="box">
-    {l s='Your order on %s is complete.' sprintf=$shop_name mod='banglapay'}
+    {l s='We have received your payment.' mod='banglapay'}
+    <br/><br/><span class="bold">{l s='Your order will be shipped very soon.' mod='banglapay'}</span>
     <br/><br/>
-    {l s='You have chosen the DBBL payment method.' mod='banglapay'}
-    <br/><br/><span class="bold">{l s='Your order will be sent very soon.' mod='banglapay'}</span>
-    <br/><br/>{l s='For any questions or for further information, please contact our' mod='banglapay'} <a
-            href="{$link->getPageLink('contact-form', true)|escape:'html'}">{l s='customer support' mod='banglapay'}</a>.
+    {*{l s='For any questions or for further information, please contact our' mod='banglapay'} <a*}
+            {*href="{$link->getPageLink('contact-form', true)|escape:'html'}">{l s='customer support' mod='banglapay'}</a>.*}
+    {l s='For any questions or for further information, please email us at ' mod='banglapay'} <a
+            href="mailto: support@goponjinish.com">support@goponjinish.com</a> or
+    {l s='call us at ' mod='banglapay'} {"01730 332502"}
 </div>
 <br/>
 <div>
