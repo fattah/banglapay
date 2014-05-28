@@ -52,7 +52,7 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
 
         $dbbl_lib = new DbblLib();
         #1 Consume dbbl api and get transaction information
-        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Goponjinish payment for cart id " . $cart->id_cart, "test-" . $cart->id_cart, Tools::getValue('bangla_card_type'));
+        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Goponjinish payment for cart id " . $cart->id, "test-" . $cart->id, Tools::getValue('bangla_card_type'));
 
         #TODO::2 Create an entry in dbbl_payments table
         #3 Redirect to dbbl payment url
@@ -89,7 +89,7 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
 	        VALUES(' . (int)$this->context->cart->id . ', \'' . DbblLib::STATE_IN_PROGRESS . '\', \'' .
                 $transaction_information['transaction_id'] . '\', \' ' . date("Y-m-d H:i:s") . '\', \' ' . date("Y-m-d H:i:s") . '\')');
 
-            $this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_AWAITING_DBBL_PAYMENT'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
+            //$this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_AWAITING_DBBL_PAYMENT'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
             if($dbbl_lib->environment == 'test')
                 $this->setTemplate('dbbl_redirect.tpl');
             else
