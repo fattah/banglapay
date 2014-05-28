@@ -34,7 +34,12 @@ class DbblLib
 
     function create_transaction($amount, $description, $mrch_transaction_id, $provider, $retry_count = 5)
     {
-        $transaction_command = $this->transaction_command($amount, $description, $this->merchant_transaction_id_prefix . $mrch_transaction_id, $provider);
+        if ($this->environment == "production") {
+            $prefix = $this->merchant_transaction_id_prefix;
+        } else {
+            $prefix = $this->merchant_transaction_id_prefix . "test-";
+        }
+        $transaction_command = $this->transaction_command($amount, $description, $prefix . $mrch_transaction_id, $provider);
 //logger . info "Transaction command: #{transaction_command}"
 //$transaction_command = "curl --get --data command=#{CGI::escape(transaction_command)} #{DBBL_CONFIG["command_runner_url"]}";
 //logger . info "Transaction command: #{transaction_command}"
