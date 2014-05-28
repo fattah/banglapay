@@ -68,14 +68,12 @@ class banglapay extends PaymentModule
         if (!$this->checkCurrency($params['cart']))
             return;
 
-        //Logger::addLog("test log2", 1);
-
         $this->smarty->assign(array(
             'this_path' => $this->_path,
             'this_path_dbbl' => $this->_path,
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));
-        return $this->display(__FILE__, 'hook/payment.tpl');
+        return $this->display(__FILE__, 'payment.tpl');
     }
 
     public function hookDisplayHeader()
