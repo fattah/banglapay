@@ -79,8 +79,6 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
             $sql = 'INSERT INTO `' . _DB_PREFIX_ . 'order_history` (`id_order`, `id_order_state`, `date_add`, `id_employee`)
 	        VALUES(' . (int)$order_attributes['id_order'] . ', ' . $state . ', \'' . date("Y-m-d H:i:s") . '\', 0)';
             Db::getInstance()->Execute($sql);
-            echo $sql;
-            echo "history id: " . Db::getInstance()->Insert_ID();
 
             $error_message = "Payment failed";
             $success = false;
