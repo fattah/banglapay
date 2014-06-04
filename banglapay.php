@@ -38,8 +38,8 @@ class banglapay extends PaymentModule
     {
         if (!parent::uninstall() || !$this->uninstallTab())
             return false;
-        if(!$this->dropDbblPaymentTable())
-            return false;
+//        if(!$this->dropDbblPaymentTable())
+//            return false;
         return true;
     }
 
