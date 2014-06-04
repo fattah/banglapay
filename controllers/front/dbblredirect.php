@@ -89,7 +89,7 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
 	        VALUES(' . (int)$this->context->cart->id . ', \'' . DbblLib::STATE_IN_PROGRESS . '\', \'' .
                 $transaction_information['transaction_id'] . '\', \' ' . date("Y-m-d H:i:s") . '\', \' ' . date("Y-m-d H:i:s") . '\')');
 
-            $this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_AWAITING_DBBL_PAYMENT'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
+            //$this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_AWAITING_DBBL_PAYMENT'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
             if($dbbl_lib->environment == 'test')
                 $this->setTemplate('dbbl_redirect.tpl');
             else

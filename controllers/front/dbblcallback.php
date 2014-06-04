@@ -42,6 +42,7 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
 	        UPDATE `' . _DB_PREFIX_ . 'dbbl_payments` set `status` = \'' . DbblLib::STATE_PAID . '\',
 	        `result_code` = \'' . $transaction_details['response_hash']['RESULT_CODE'] . '\' ,
 	        `result` = \'' . $transaction_details['response_hash']['RESULT'] . '\',
+	        `dbbl_response` = \'' . $transaction_details['details'] . '\',
 	        `updated_at` = \'' . date("Y-m-d H:i:s") . '\'
 	        where `dbbl_transaction_id` = \'' . $dbbl_transaction_id . '\'');
                 #TODO: update order status.
@@ -62,9 +63,10 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
         } else {
             #TODO::  update transaction status,
             Db::getInstance()->Execute('
-	        UPDATE `' . _DB_PREFIX_ . 'dbbl_payments` set `status` = \'' . DbblLib::STATE_PAID . '\',
+	        UPDATE `' . _DB_PREFIX_ . 'dbbl_payments` set `status` = \'' . DbblLib::STATE_FAILED . '\',
 	        `result_code` = \'' . $transaction_details['response_hash']['RESULT_CODE'] . '\' ,
-	        `result` = \'' . $transaction_details['response_hash']['RESULT'] . '\',
+	        `result` = \'' . $transaction_details['RESULT'] . '\',
+	        `dbbl_response` = \'' . $transaction_details['details'] . '\',
 	        `updated_at` = \'' . date("Y-m-d H:i:s") . '\'
 	        where `dbbl_transaction_id` = \'' . $dbbl_transaction_id . '\'');
 

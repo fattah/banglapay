@@ -23,7 +23,7 @@ class banglapay extends PaymentModule
 
     public function install()
     {
-        if (!parent::install() || !$this->createDbblPaymentTable() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('header'))
+        if (!parent::install() || !$this->createDbblPaymentTable() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('header') || !$this->installTab())
             return false;
         $this->setupStatus();
         $command = "ln -s " . _PS_MODULE_DIR_ . $this->name . "/themes/autumn/modules/" . $this->name . " " . _PS_THEME_DIR_ . "modules/" . $this->name;
@@ -36,8 +36,40 @@ class banglapay extends PaymentModule
 
     public function uninstall()
     {
-        if (!parent::uninstall() || !$this->dropDbblPaymentTable())
+        if (!parent::uninstall() || !$this->uninstallTab())
             return false;
+        if(!$this->dropDbblPaymentTable())
+            return false;
+        return true;
+    }
+
+    public function installTab()
+    {
+        $parentTab = new Tab();
+        $parentTab->active = 1;
+        $parentTab->name = array();
+        $parentTab->class_name = "AdminBanglapay";
+        foreach (Language::getLanguages() as $lang){
+            $parentTab->name[$lang['id_lang']] = "Banglapay";
+        }
+        $parentTab->id_parent = 0;
+        $parentTab->module = $this->name;
+        $response = $parentTab->add();
+
+        return $response;
+    }
+
+    public function uninstallTab()
+    {
+        $id_tabs = array(
+            (int)Tab::getIdFromClassName('AdminBanglapay')
+        );
+
+        foreach ($id_tabs as $id_tab){
+            $tab = new Tab($id_tab);
+            $tab->delete();
+        }
+
         return true;
     }
 
