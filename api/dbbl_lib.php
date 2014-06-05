@@ -117,7 +117,7 @@ class DbblLib
 
     function is_payment_complete($transaction_details)
     {
-        if ($transaction_details['code'] == '000')
+        if ($transaction_details['code'] == '000')// && $transaction_details['response_hash']["RESULT"] == 'OK')
             return true;
         return false;
     }

@@ -6,6 +6,9 @@
  * Date: 6/3/14
  * Time: 6:43 PM
  */
+
+include_once(_PS_MODULE_DIR_ . '/banglapay/api/banglapay_lib.php');
+
 class AdminBanglapayController extends ModuleAdminController
 {
 
@@ -31,6 +34,8 @@ class AdminBanglapayController extends ModuleAdminController
 
         $this->addRowAction('edit');
         $this->addRowAction('delete');
+        $this->addRowAction('details');
+        $this->addRowAction('updatestatus');
 
         $this->fields_list = array(
             'id' => array(
@@ -68,12 +73,6 @@ class AdminBanglapayController extends ModuleAdminController
             ),
             'dbbl_transaction_id' => array(
                 'title' => $this->l('Transaction id'),
-                'width' => 70,
-                'align' => 'center',
-                'orderby' => false
-            ),
-            'dbbl_request' => array(
-                'title' => $this->l('Request'),
                 'width' => 70,
                 'align' => 'center',
                 'orderby' => false
@@ -425,6 +424,43 @@ class AdminBanglapayController extends ModuleAdminController
         }
 
         return false;
+    }
+
+    public function processUpdatestatus()
+    {
+        $dbbl_transaction_id = Tools::getValue('trans_id');
+        $banglapay_lib = new BanglapayLib();
+        list($success, $error_message) = $banglapay_lib->update_payment_by_dbbl_payment_id(Tools::getValue('id'));
+
+        if($success == true){
+            $this->context->controller->informations = array("Payment successful");
+        }else{
+            $this->context->controller->errors = array("Payment failed");
+        }
+
+        return true;
+    }
+
+    public function displayUpdatestatusLink($token, $id)
+    {
+        $tpl = $this->createTemplate('list_action_update_status.tpl');
+        $tpl->assign(array(
+            'href' => self::$currentIndex.'&token='.$this->token.'&'.
+                $this->identifier.'='.$id.'&updatestatus'.$this->table.'=1',
+            'action' => $this->l('UpdateStatus')
+        ));
+
+        return $tpl->fetch();
+    }
+
+    public function initProcess()
+    {
+        parent::initProcess();
+        if (Tools::getValue('updatestatus'.$this->table))
+        {
+            $this->display = 'updatestatus';
+            $this->action = 'updatestatus';
+        }
     }
 
 }
