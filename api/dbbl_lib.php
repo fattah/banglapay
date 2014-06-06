@@ -27,10 +27,16 @@ class DbblLib
     const STATE_FAILED = 'failed';
     const STATE_IN_PROGRESS = 'in_progress';
 
-    public $dbbl_lib_directory = "/home/deployer/dbbl/production";
+    public $dbbl_lib_directory = "";//"/home/deployer/dbbl/productionX";
     public $payment_url = "https://ecom1.dutchbanglabank.com/ecomm2/ClientHandler";
-    public $merchant_transaction_id_prefix = "gj-";
+    public $merchant_transaction_id_prefix = "";//"Xgj-";
     public $environment = "production"; # "test"/"production"
+
+    function __construct()
+    {
+        $this->dbbl_lib_directory = Configuration::get('BANGLAPAY_DBBL_LIB_DIRECTORY');
+        $this->merchant_transaction_id_prefix = Configuration::get('BANGLAPAY_TRANSACTION_ID_PREFIX');
+    }
 
     function create_transaction($amount, $description, $mrch_transaction_id, $provider, $retry_count = 5)
     {

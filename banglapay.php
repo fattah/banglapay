@@ -26,6 +26,7 @@ class banglapay extends PaymentModule
         if (!parent::install() || !$this->createDbblPaymentTable() || !$this->registerHook('payment') || !$this->registerHook('paymentReturn') || !$this->registerHook('header') || !$this->installTab())
             return false;
         $this->setupStatus();
+        $this->setupDefaultConfigurationValues();
         $command = "ln -s " . _PS_MODULE_DIR_ . $this->name . "/themes/autumn/modules/" . $this->name . " " . _PS_THEME_DIR_ . "modules/" . $this->name;
         echo "Command: " . $command;
         file_put_contents(_PS_ROOT_DIR_ . "/log/dbbl-commands.log", $command . "\n", FILE_APPEND);
@@ -49,7 +50,7 @@ class banglapay extends PaymentModule
         $parentTab->active = 1;
         $parentTab->name = array();
         $parentTab->class_name = "AdminBanglapay";
-        foreach (Language::getLanguages() as $lang){
+        foreach (Language::getLanguages() as $lang) {
             $parentTab->name[$lang['id_lang']] = "Banglapay";
         }
         $parentTab->id_parent = 0;
@@ -65,7 +66,7 @@ class banglapay extends PaymentModule
             (int)Tab::getIdFromClassName('AdminBanglapay')
         );
 
-        foreach ($id_tabs as $id_tab){
+        foreach ($id_tabs as $id_tab) {
             $tab = new Tab($id_tab);
             $tab->delete();
         }
@@ -96,6 +97,16 @@ class banglapay extends PaymentModule
                 Configuration::updateValue('PS_OS_AWAITING_DBBL_PAYMENT', $stateid);
             }
         }
+    }
+
+    public function setupDefaultConfigurationValues()
+    {
+        if (Configuration::get('BANGLAPAY_DBBL_LIB_DIRECTORY') == null || Configuration::get('BANGLAPAY_DBBL_LIB_DIRECTORY') == "")
+            Configuration::updateValue('BANGLAPAY_DBBL_LIB_DIRECTORY', "/home/deployer/dbbl/production");
+        if (Configuration::get('BANGLAPAY_TRANSACTION_ID_PREFIX') == null || Configuration::get('BANGLAPAY_TRANSACTION_ID_PREFIX') == "")
+            Configuration::updateValue('BANGLAPAY_TRANSACTION_ID_PREFIX', "gj-");
+
+        return true;
     }
 
     public function hookPayment($params)
@@ -173,4 +184,29 @@ class banglapay extends PaymentModule
 
         return true;
     }
+
+    public function getContent()
+    {
+        if (Tools::isSubmit('banglapay_config')) {
+            $this->updateConfiguration();
+        }
+        $this->loadConfiguration();
+
+        return $this->display(__FILE__, 'config.tpl');
+    }
+
+    public function loadConfiguration()
+    {
+        $dbbl_lib_directory = Configuration::get('BANGLAPAY_DBBL_LIB_DIRECTORY');
+        $transaction_id_prefix = Configuration::get('BANGLAPAY_TRANSACTION_ID_PREFIX');
+        $this->context->smarty->assign('banglapay_lib_dir', $dbbl_lib_directory);
+        $this->context->smarty->assign('banglapay_transaction_id_prefix', $transaction_id_prefix);
+    }
+
+    public function updateConfiguration()
+    {
+        Configuration::updateValue('BANGLAPAY_DBBL_LIB_DIRECTORY', Tools::getValue('banglapay_lib_dir'));
+        Configuration::updateValue('BANGLAPAY_TRANSACTION_ID_PREFIX', Tools::getValue('banglapay_transaction_id_prefix'));
+    }
+
 }
