@@ -38,7 +38,7 @@ class BanglapayLib{
 
         if ($dbbl_lib->is_payment_complete($transaction_details)) {
             #TODO: check status was not successful before
-            if (true) {
+            if ($dbbl_payment["status"] != DbblLib::STATE_PAID) {
                 #TODO::  update transaction status,
                 Db::getInstance()->Execute('
 	        UPDATE `' . _DB_PREFIX_ . 'dbbl_payments` set `status` = \'' . DbblLib::STATE_PAID . '\',
@@ -61,6 +61,10 @@ class BanglapayLib{
 
                 $error_message = "Payment completed";
                 $success = true;
+            }
+            else{
+                $error_message = "Status cannot be changed of a previously completed payment.";
+                $success = false;
             }
         } else {
             #TODO::  update transaction status,

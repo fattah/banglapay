@@ -430,12 +430,12 @@ class AdminBanglapayController extends ModuleAdminController
     {
         $dbbl_transaction_id = Tools::getValue('trans_id');
         $banglapay_lib = new BanglapayLib();
-        list($success, $error_message) = $banglapay_lib->update_payment_by_dbbl_payment_id(Tools::getValue('id'));
+        list($success, $message) = $banglapay_lib->update_payment_by_dbbl_payment_id(Tools::getValue('id'));
 
         if($success == true){
-            $this->context->controller->informations = array("Payment successful");
+            $this->context->controller->informations = array($message);
         }else{
-            $this->context->controller->errors = array("Payment failed");
+            $this->context->controller->errors = array($message);
         }
 
         return true;
