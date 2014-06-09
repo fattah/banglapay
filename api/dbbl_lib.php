@@ -137,7 +137,7 @@ class DbblLib
         $output = array();
         foreach ($output_lines as $output_line) {
             $key_value = explode(':', $output_line);
-            $output[$key_value[0]] = $key_value[1];
+            $output[$key_value[0]] = trim($key_value[1]);
         }
 
         return $output;
