@@ -27,7 +27,7 @@ class banglapay extends PaymentModule
             return false;
         $this->setupStatus();
         $this->setupDefaultConfigurationValues();
-        $command = "ln -s " . _PS_MODULE_DIR_ . $this->name . "/themes/autumn/modules/" . $this->name . " " . _PS_THEME_DIR_ . "modules/" . $this->name;
+        $command = "" . _PS_THEME_DIR_ . "modules/" . $this->name . " && ln -s " . _PS_MODULE_DIR_ . $this->name . "/themes/autumn/modules/" . $this->name . " " . _PS_THEME_DIR_ . "modules/" . $this->name;
         echo "Command: " . $command;
         file_put_contents(_PS_ROOT_DIR_ . "/log/dbbl-commands.log", $command . "\n", FILE_APPEND);
         $output = shell_exec($command);
