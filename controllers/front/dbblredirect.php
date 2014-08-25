@@ -85,9 +85,9 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
             $this->setTemplate('select_card_type.tpl');
         } else {
             Db::getInstance()->Execute('
-	        INSERT INTO `' . _DB_PREFIX_ . 'dbbl_payments` (`cart_id`, `status`, `dbbl_transaction_id`, `created_at`, `updated_at`)
+	        INSERT INTO `' . _DB_PREFIX_ . 'dbbl_payments` (`cart_id`, `status`, `dbbl_transaction_id`, `created_at`, `updated_at`, `amount`)
 	        VALUES(' . (int)$this->context->cart->id . ', \'' . DbblLib::STATE_IN_PROGRESS . '\', \'' .
-                $transaction_information['transaction_id'] . '\', \' ' . date("Y-m-d H:i:s") . '\', \' ' . date("Y-m-d H:i:s") . '\')');
+                $transaction_information['transaction_id'] . '\', \' ' . date("Y-m-d H:i:s") . '\', \' ' . date("Y-m-d H:i:s") . '\', ' . $total . ')');
 
             $this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_AWAITING_DBBL_PAYMENT'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
             if($dbbl_lib->environment == 'test')

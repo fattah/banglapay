@@ -27,6 +27,7 @@ class banglapay extends PaymentModule
             return false;
         $this->setupStatus();
         $this->setupDefaultConfigurationValues();
+        $this->updateDbblPaymentTransactionAmount();
         $command = "rm -f " . _PS_THEME_DIR_ . "modules/" . $this->name . " && ln -s " . _PS_MODULE_DIR_ . $this->name . "/themes/autumn/modules/" . $this->name . " " . _PS_THEME_DIR_ . "modules/" . $this->name . " 2>&1";
         echo "Command: " . $command;
         file_put_contents(_PS_ROOT_DIR_ . "/log/dbbl-commands.log", $command . "\n", FILE_APPEND);
@@ -172,6 +173,8 @@ class banglapay extends PaymentModule
 
         $db->Execute($query);
 
+        $db->Execute("ALTER TABLE `" . _DB_PREFIX_ . "dbbl_payments` ADD COLUMN amount FLOAT(11) DEFAULT NULL AFTER `order_id`");
+
         return true;
     }
 
@@ -207,6 +210,19 @@ class banglapay extends PaymentModule
     {
         Configuration::updateValue('BANGLAPAY_DBBL_LIB_DIRECTORY', Tools::getValue('banglapay_lib_dir'));
         Configuration::updateValue('BANGLAPAY_TRANSACTION_ID_PREFIX', Tools::getValue('banglapay_transaction_id_prefix'));
+    }
+
+    public function updateDbblPaymentTransactionAmount()
+    {
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where amount is null';
+        $results = Db::getInstance()->ExecuteS($sql);
+        foreach ($results as $row){
+            $cart = new Cart($row["cart_id"]);
+            $amount = $cart->getOrderTotal(true, Cart::BOTH);
+            Db::getInstance()->Execute('
+	        UPDATE `' . _DB_PREFIX_ . 'dbbl_payments` set `amount` = ' . $amount . '
+	        where `id` = \'' . $row["id"] . '\'');
+        }
     }
 
 }
