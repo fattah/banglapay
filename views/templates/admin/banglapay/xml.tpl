@@ -4,7 +4,7 @@
 <br/>
 &nbsp;&nbsp;{"<name>Transaction Logs</name>"|escape:'html'}
 <br/>
-&nbsp;&nbsp;{"<creationDate>2014-08-25 20:56:58</creationDate>"|escape:'html'}
+&nbsp;&nbsp;{"<creationDate>"|cat:date("Y-m-d H:i:s")|cat:"</creationDate>"|escape:'html'}
 <br/>
 &nbsp;&nbsp;{"<copyright>Copyright (C). Nascenia Limited. All rights reserved.</copyright>"|escape:'html'}
 <br/>
