@@ -255,7 +255,8 @@ class AdminBanglapayController extends ModuleAdminController
             $startdate = Tools::getValue('startdate');
             $enddate = Tools::getValue('enddate');
 
-            $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where created_at >= \'' . $startdate . ' 00:00:00\' and created_at <=\'' . $enddate . ' 23:59:59\' order by created_at desc';
+            $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where created_at >= \'' . $startdate . ' 00:00:00\' and
+            created_at <=\'' . $enddate . ' 23:59:59\' and result_code = \'000\' and result = \'OK\'  order by created_at desc';
             $results = Db::getInstance()->ExecuteS($sql);
             foreach ($results as $row){
                 //echo $row['dbbl_transaction_id'];
