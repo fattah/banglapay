@@ -33,6 +33,7 @@ class AdminBanglapayController extends ModuleAdminController
         $this->meta_title = $this->l('DBBL payment attempts');
         $this->deleted = false;
         //$this->explicitSelect = true;
+        $this->list_no_link = true;
         $this->context = Context::getContext();
         //$this->lang = true;
         $this->bootstrap = true;
@@ -47,6 +48,7 @@ class AdminBanglapayController extends ModuleAdminController
 //        $this->addRowAction('delete');
         $this->addRowAction('details');
         $this->addRowAction('updatestatus');
+        $this->addRowAction('cart');
 
         $this->fields_list = array(
             'id' => array(
@@ -230,12 +232,26 @@ class AdminBanglapayController extends ModuleAdminController
         return $tpl->fetch();
     }
 
+    public function displayCartLink($token, $id)
+    {
+        $tpl = $this->createTemplate('list_action_cart.tpl');
+        $tpl->assign(array(
+            'href' => "index.php?controller=AdminCarts&id_cart=$id&viewcart&token=" . Tools::getAdminTokenLite("AdminCarts"),
+            'action' => $this->l('Cart')
+        ));
+
+        return $tpl->fetch();
+    }
+
     public function initProcess()
     {
         parent::initProcess();
         if (Tools::getValue('updatestatus' . $this->table)) {
             $this->display = 'updatestatus';
             $this->action = 'updatestatus';
+        }elseif (Tools::getValue('cart' . $this->table)) {
+            $this->display = 'cart';
+            $this->action = 'cart';
         }
     }
 
