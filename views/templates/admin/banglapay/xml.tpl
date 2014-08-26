@@ -23,6 +23,8 @@
         <br/>
         &nbsp;&nbsp;&nbsp;&nbsp;{"<totalAmount>"|cat:floor($row["amount"]*100)|cat:"</totalAmount>"|escape:'html'}
         <br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;{"<cartid>"|cat:floor($row["cart_id"])|cat:"</cartid>"|escape:'html'}
+        <br/>
         &nbsp;&nbsp;&nbsp;&nbsp;{"<accountName>Nascenia Limited</accountName>"|escape:'html'}
         <br/>
         &nbsp;&nbsp;&nbsp;&nbsp;{"<accountNumber>108.110.19642</accountNumber>"|escape:'html'}
