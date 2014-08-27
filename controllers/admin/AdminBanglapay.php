@@ -235,8 +235,11 @@ class AdminBanglapayController extends ModuleAdminController
     public function displayCartLink($token, $id)
     {
         $tpl = $this->createTemplate('list_action_cart.tpl');
+
+        $row = Db::getInstance()->getRow("SELECT * FROM " . _DB_PREFIX_ . "dbbl_payments where id = $id");
+        $id = $id->cart_id;
         $tpl->assign(array(
-            'href' => "index.php?controller=AdminCarts&id_cart=$id&viewcart&token=" . Tools::getAdminTokenLite("AdminCarts"),
+            'href' => "index.php?controller=AdminCarts&id_cart=" . $row["cart_id"] . "&viewcart&token=" . Tools::getAdminTokenLite("AdminCarts"),
             'action' => $this->l('Cart')
         ));
 
