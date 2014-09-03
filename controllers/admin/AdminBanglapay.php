@@ -273,16 +273,23 @@ class AdminBanglapayController extends ModuleAdminController
         {
             $startdate = Tools::getValue('startdate');
             $enddate = Tools::getValue('enddate');
+            $condition = 'created_at >= \'' . $startdate . ' 00:00:00\' and
+            created_at <=\'' . $enddate . ' 23:59:59\' and result_code = \'000\' and result = \'OK\'';
 
-            $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where created_at >= \'' . $startdate . ' 00:00:00\' and
-            created_at <=\'' . $enddate . ' 23:59:59\' and result_code = \'000\' and result = \'OK\'  order by created_at desc';
+            $count_sql = "SELECT count(*) FROM " . _DB_PREFIX_ . "dbbl_payments where $condition";
+            $total_amount_sql = "SELECT sum(amount) FROM " . _DB_PREFIX_ . "dbbl_payments where $condition";
+            $total_rows = Db::getInstance()->getValue($count_sql);
+            $total_amount = Db::getInstance()->getValue($total_amount_sql);
+            $sql = 'SELECT * FROM ' . _DB_PREFIX_ . "dbbl_payments where $condition order by created_at desc";
             $results = Db::getInstance()->ExecuteS($sql);
-            foreach ($results as $row){
-                //echo $row['dbbl_transaction_id'];
-            }
+//            foreach ($results as $row){
+//                //echo $row['dbbl_transaction_id'];
+//            }
 
             $this->context->smarty->assign(array(
-                'results' => $results
+                'results' => $results,
+                'total_rows' => $total_rows,
+                'total_amount' => $total_amount
             ));
         }
     }

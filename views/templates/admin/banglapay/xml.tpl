@@ -1,3 +1,8 @@
+Number of transaction nodes: {$total_rows}
+<br/>
+Total amount: {$total_amount}
+<br/><br/>
+
 {"<?xml version=\"1.0\"?>"|escape:'html'}
 <br/>
 {"<catalog>"|escape:'html'}
