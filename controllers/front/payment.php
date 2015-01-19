@@ -54,7 +54,8 @@ class BanglapayPaymentModuleFrontController extends ModuleFrontController
 			'total' => $cart->getOrderTotal(true, Cart::BOTH),
 			'this_path' => $this->module->getPathUri(),
 			'this_path_bw' => $this->module->getPathUri(),
-			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
+			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
+            'error_message' => ""
 		));
         Logger::addLog("test payment2", 1);
 
