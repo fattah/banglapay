@@ -38,9 +38,9 @@ class DbblLib
         $this->merchant_transaction_id_prefix = Configuration::get('BANGLAPAY_TRANSACTION_ID_PREFIX');
     }
 
-    function create_transaction($amount, $description, $mrch_transaction_id, $provider, $retry_count = 5)
+    function create_transaction($amount, $description, $mrch_transaction_id, $provider, $ip_address, $retry_count = 5)
     {
-        $transaction_command = $this->transaction_command($amount, $description, $this->merchant_transaction_id_prefix . $mrch_transaction_id, $provider);
+        $transaction_command = $this->transaction_command($amount, $description, $this->merchant_transaction_id_prefix . $mrch_transaction_id, $provider, $ip_address);
 //logger . info "Transaction command: #{transaction_command}"
 //$transaction_command = "curl --get --data command=#{CGI::escape(transaction_command)} #{DBBL_CONFIG["command_runner_url"]}";
 //logger . info "Transaction command: #{transaction_command}"
@@ -76,12 +76,12 @@ class DbblLib
         return $transaction_response;
     }
 
-    function verify_dbbl_transaction($transaction_id, $mrch_transaction_id = "")
+    function verify_dbbl_transaction($transaction_id, $ip_address, $mrch_transaction_id = "")
     {
         if ($transaction_id == null)
             $transaction_id = "";
 
-        $transaction_command = $this->verify_transaction_command($transaction_id);
+        $transaction_command = $this->verify_transaction_command($transaction_id, $ip_address);
         //$transaction_command = "curl --get --data command=#{CGI::escape(transaction_command)} #{DBBL_CONFIG["command_runner_url"]}";
 
         if ($this->environment == "production") {
@@ -112,9 +112,8 @@ class DbblLib
         return array('transaction_id' => $transaction_id, 'details' => $response_lines);
     }
 
-    function transaction_command($amount, $description, $mrch_transaction_id, $provider)
+    function transaction_command($amount, $description, $mrch_transaction_id, $provider, $ip_address = "106.186.115.31")
     {
-        $ip_address = "106.186.115.31"; //DBBL_CONFIG["ip_address"], read from configuration
         $amount_in_paisa = $amount * 100;
         //return 'test1';
         return "java -jar \"" . $this->dbbl_lib_directory . "/ecomm_merchant.jar\" \"" . $this->dbbl_lib_directory . "/merchant.properties\" -v " .
@@ -143,10 +142,9 @@ class DbblLib
         return $output;
     }
 
-    function verify_transaction_command($transaction_id, $mrch_transaction_id = "")
+    function verify_transaction_command($transaction_id, $ip_address = "106.186.115.31", $mrch_transaction_id = "")
     {
 //        return 'test2';
-        $ip_address = "106.186.115.31"; //DBBL_CONFIG["ip_address"], read from configuration
         return "java -jar \"" . $this->dbbl_lib_directory . "/ecomm_merchant.jar\" " . "\"" . $this->dbbl_lib_directory . "/merchant.properties\" -c " .
         $transaction_id . " $ip_address -mrch_transaction_id" . " 2>&1";
     }

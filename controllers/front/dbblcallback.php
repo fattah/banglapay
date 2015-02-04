@@ -30,7 +30,7 @@ class BanglapayDbblcallbackModuleFrontController extends ModuleFrontController
 
         $dbbl_transaction_id = Tools::getValue('trans_id');
         $banglapay_lib = new BanglapayLib();
-        list($success, $error_message) = $banglapay_lib->update_payment_by_dbbl_transaction_id(Tools::getValue('trans_id'));
+        list($success, $error_message) = $banglapay_lib->update_payment_by_dbbl_transaction_id(Tools::getValue('trans_id'), Tools::getRemoteAddr());
 
         $redirect_url = "";
         $total = $this->context->cart->getOrderTotal(true, Cart::BOTH);

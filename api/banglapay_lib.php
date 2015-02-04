@@ -10,9 +10,9 @@ include_once('dbbl_lib.php');
 
 class BanglapayLib{
 
-    function update_payment_by_dbbl_transaction_id($dbbl_transaction_id){
+    function update_payment_by_dbbl_transaction_id($dbbl_transaction_id, $ip_address){
         $dbbl_lib = new DbblLib();
-        $transaction_details = $dbbl_lib->verify_dbbl_transaction($dbbl_transaction_id);
+        $transaction_details = $dbbl_lib->verify_dbbl_transaction($dbbl_transaction_id, $ip_address);
         #Todo: Retrieve dbbl_payment fro db.
         $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where dbbl_transaction_id = \'' . $dbbl_transaction_id . '\' order by created_at desc';
         $dbbl_payment = Db::getInstance()->getRow($sql);
@@ -20,12 +20,12 @@ class BanglapayLib{
         return $this->update_dbbl_payment($dbbl_payment, $transaction_details);
     }
 
-    function update_payment_by_dbbl_payment_id($dbbl_payment_id){
+    function update_payment_by_dbbl_payment_id($dbbl_payment_id, $ip_address){
         $dbbl_lib = new DbblLib();
         #Todo: Retrieve dbbl_payment fro db.
         $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'dbbl_payments where id = \'' . $dbbl_payment_id . '\' order by created_at desc';
         $dbbl_payment = Db::getInstance()->getRow($sql);
-        $transaction_details = $dbbl_lib->verify_dbbl_transaction($dbbl_payment['dbbl_transaction_id']);
+        $transaction_details = $dbbl_lib->verify_dbbl_transaction($dbbl_payment['dbbl_transaction_id'], $ip_address);
 
         return $this->update_dbbl_payment($dbbl_payment, $transaction_details);
     }

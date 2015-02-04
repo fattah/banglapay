@@ -209,7 +209,7 @@ class AdminBanglapayController extends ModuleAdminController
     {
         $dbbl_transaction_id = Tools::getValue('trans_id');
         $banglapay_lib = new BanglapayLib();
-        list($success, $message) = $banglapay_lib->update_payment_by_dbbl_payment_id(Tools::getValue('id'));
+        list($success, $message) = $banglapay_lib->update_payment_by_dbbl_payment_id(Tools::getValue('id'), Tools::getRemoteAddr());
 
         if ($success == true) {
             $this->context->controller->informations = array($message);
