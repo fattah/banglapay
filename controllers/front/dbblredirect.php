@@ -52,7 +52,8 @@ class BanglapayDbblredirectModuleFrontController extends ModuleFrontController
 
         $dbbl_lib = new DbblLib();
         #1 Consume dbbl api and get transaction information
-        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Goponjinish payment for cart id " . $cart->id, "cart-" . $cart->id, Tools::getValue('bangla_card_type'), Tools::getRemoteAddr());
+        #Tools::getRemoteAddr() function does not work properly;
+        $transaction_information = $dbbl_lib->create_transaction($cart->getOrderTotal(true, Cart::BOTH), "Goponjinish payment for cart id " . $cart->id, "cart-" . $cart->id, Tools::getValue('bangla_card_type'), $_SERVER['HTTP_X_FORWARDED_FOR']);
 
         #TODO::2 Create an entry in dbbl_payments table
         #3 Redirect to dbbl payment url
