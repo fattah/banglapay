@@ -290,7 +290,8 @@ class AdminBanglapayController extends ModuleAdminController
             $this->context->smarty->assign(array(
                 'results' => $results,
                 'total_rows' => $total_rows,
-                'total_amount' => $total_amount
+                'total_amount' => $total_amount,
+                'show_cart_id' => Tools::getValue('showcartid', 0)
             ));
         }
     }
