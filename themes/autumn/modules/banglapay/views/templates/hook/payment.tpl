@@ -22,7 +22,7 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<div class="row">
+{*<div class="row">
 	<div class="column col-12-12">
         <div class="payment_module box">
             <a href="{$link->getModuleLink('banglapay', 'payment', [], true)|escape:'html'}"
@@ -30,6 +30,20 @@
                 <img src="{$this_path_dbbl}img/bankwire.png" alt="{l s='Pay by DBBL card.' mod='banglapay'}" width="auto"
                 height="49"/>
                 {l s='Pay Online' mod='banglapay'}&nbsp;<span>{l s='(order processing will be faster)' mod='banglapay'}</span>
+            </a>
+        </div>
+    </div>
+</div>*}
+
+<div class="item resItem sojBgPay">
+    <div class="column col-12-12">
+        <div class="payment_module box">
+            <a href="{$link->getModuleLink('banglapay', 'payment', [], true)|escape:'html'}" title="{l s='Pay online.' mod='banglapay'}" class="banglapay">
+                <span class="bgPayIcon"><img src="{$this_path_dbbl}bankwire.png" alt="{l s='Pay by DBBL card.' mod='banglapay'}" height="37"/></span>
+                <span class="payment_desc">
+                    {l s='Pay Online' mod='banglapay'}<br />
+                    {l s='(order processing will be faster)' mod='banglapay'}
+                </span>
             </a>
         </div>
     </div>
